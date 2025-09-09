@@ -49,9 +49,13 @@ public class AlienManager : MonoBehaviour
         }
     }
 
+    private bool edgeHit = false;
+
     void MoveAliens()
     {
         transform.position += moveDirection * baseSpeed * Time.deltaTime;
+
+        bool hitEdge = false;
 
         foreach (GameObject alien in aliens)
         {
@@ -60,13 +64,24 @@ public class AlienManager : MonoBehaviour
                 Vector3 viewportPos = Camera.main.WorldToViewportPoint(alien.transform.position);
                 if (viewportPos.x < 0.05f || viewportPos.x > 0.95f)
                 {
-                    moveDirection = -moveDirection;
-                    transform.position += Vector3.back * dropDistance;
-                    return;
+                    hitEdge = true;
+                    break; // only need one alien to trigger
                 }
             }
         }
+
+        if (hitEdge && !edgeHit)
+        {
+            moveDirection = -moveDirection;
+            transform.position += Vector3.back * dropDistance;
+            edgeHit = true; // mark that we've already dropped
+        }
+        else if (!hitEdge)
+        {
+            edgeHit = false; // reset when back in bounds
+        }
     }
+
 
     void UpdateSpeed()
     {

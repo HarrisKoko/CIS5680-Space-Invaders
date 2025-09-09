@@ -9,8 +9,7 @@ public class Alien : MonoBehaviour
         // Only respond to player bullets
         if (collision.gameObject.CompareTag("PlayerBullet"))
         {
-            // Notify GameController (optional) to add score
-            //GameController.Instance?.AddScore(scoreValue);
+            // Notify GameController to add score
 
             // Destroy the alien
             Destroy(gameObject);
@@ -22,7 +21,7 @@ public class Alien : MonoBehaviour
 
     public void Die()
     {
-        // Optional: play explosion VFX or sound here
+        // Play explosion VFX or sound here
         Destroy(gameObject);
     }
 }

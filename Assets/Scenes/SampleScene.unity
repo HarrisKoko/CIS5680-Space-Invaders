@@ -465,7 +465,7 @@ MonoBehaviour:
   rows: 5
   cols: 11
   spacing: 2
-  baseSpeed: 1.5
+  baseSpeed: 6
   maxSpeed: 8
   dropDistance: 0.5
   alienBulletPrefab: {fileID: 370207936181308949, guid: 71e9539e36ff76746be75816aaba412f, type: 3}
