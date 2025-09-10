@@ -27,6 +27,10 @@ public class AlienManager : MonoBehaviour
     public float ufoSpawnIntervalMax = 40f;
     private float nextUfoTime = 0f;
 
+    [Header("Game Over / Level Cleared Settings")]
+    public float deathZ = 0f; // Z position where aliens reaching triggers game over
+    private bool gameEnded = false; // prevents multiple triggers
+
     private List<GameObject> aliens = new List<GameObject>();
     private bool edgeHit = false;
 
@@ -35,22 +39,26 @@ public class AlienManager : MonoBehaviour
     void Start()
     {
         SpawnAliens();
-        ScheduleNextUFO();  // Start the random interval for next UFOs
+        ScheduleNextUFO();
     }
 
     void Update()
     {
+        if (gameEnded) return; // stop updates if game over or level cleared
+
         UpdateSpeed();
         MoveAliens();
         HandleAlienFiring();
         HandleUFOSpawn();
+
+        CheckAliensReachedBottom();
+        CheckLevelCleared();
     }
 
     void SpawnAliens()
     {
         aliens.Clear();
 
-        // Determine number of rows per zone
         int zoneSize = Mathf.CeilToInt((float)rows / 3);
 
         for (int row = 0; row < rows; row++)
@@ -58,18 +66,19 @@ public class AlienManager : MonoBehaviour
             for (int col = 0; col < cols; col++)
             {
                 Vector3 pos = new Vector3(col * spacing, 0f, row * spacing);
-                GameObject alien = Instantiate(alienPrefab, pos, Quaternion.identity, transform);
+                Quaternion rotation = Quaternion.Euler(90f, 0f, 0f);
+                GameObject alien = Instantiate(alienPrefab, pos, rotation, transform);
 
-                // Assign score based on row zone
+
                 Alien alienScript = alien.GetComponent<Alien>();
                 if (alienScript != null)
                 {
                     if (row < zoneSize)
-                        alienScript.scoreValue = 10;       // Bottom zone
+                        alienScript.scoreValue = 10;
                     else if (row < 2 * zoneSize)
-                        alienScript.scoreValue = 20;       // Middle zone
+                        alienScript.scoreValue = 20;
                     else
-                        alienScript.scoreValue = 30;       // Top zone
+                        alienScript.scoreValue = 30;
                 }
 
                 aliens.Add(alien);
@@ -153,18 +162,40 @@ public class AlienManager : MonoBehaviour
 
     void SpawnUFO()
     {
-        Vector3 spawnPos = new Vector3(-20f, 0f, 10f); // start pos
+        Vector3 spawnPos = new Vector3(-20f, 0f, 10f);
         GameObject ufo = Instantiate(ufoPrefab, spawnPos, Quaternion.identity);
         ufo.transform.localScale = Vector3.one;
 
         UFO ufoScript = ufo.GetComponent<UFO>();
         if (ufoScript != null)
-            ufoScript.movingRight = true; // or false
+            ufoScript.movingRight = true;
     }
-
 
     void ScheduleNextUFO()
     {
         nextUfoTime = Time.time + Random.Range(ufoSpawnIntervalMin, ufoSpawnIntervalMax);
+    }
+
+    void CheckAliensReachedBottom()
+    {
+        foreach (var alien in aliens)
+        {
+            if (alien != null && alien.transform.position.z <= deathZ)
+            {
+                gameEnded = true;
+                GameManager.Instance.TriggerGameOver();
+                break;
+            }
+        }
+    }
+
+    void CheckLevelCleared()
+    {
+        // If all aliens destroyed
+        if (aliens.All(a => a == null))
+        {
+            gameEnded = true;
+            GameManager.Instance.TriggerLevelCleared();
+        }
     }
 }

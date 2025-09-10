@@ -32,7 +32,8 @@ public class Ship : MonoBehaviour
         // Fire bullet with cooldown
         if (Input.GetButtonDown("Fire1") && Time.time - lastFireTime >= fireCooldown)
         {
-            Vector3 spawnPos = transform.position + new Vector3(0f, 0f, bulletOffset);
+            // Use transform.forward for correct direction & scale compensation
+            Vector3 spawnPos = transform.position + transform.forward * bulletOffset;
             Quaternion spawnRot = Quaternion.Euler(90f, 0f, 0f);
             Instantiate(bulletPrefab, spawnPos, spawnRot);
             lastFireTime = Time.time;
@@ -43,6 +44,7 @@ public class Ship : MonoBehaviour
     {
         lives--;
         GameManager.Instance?.UpdateLivesUI(lives); // Update UI immediately
+
         if (lives <= 0)
             Die();
     }
@@ -51,6 +53,8 @@ public class Ship : MonoBehaviour
     {
         Debug.Log("Player ship destroyed!");
         Destroy(gameObject);
-        // Optionally: call GameController to end game
+
+        // Notify GameManager to trigger Game Over UI
+        GameManager.Instance?.TriggerGameOver();
     }
 }
