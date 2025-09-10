@@ -7,7 +7,15 @@ public class BulletScript : MonoBehaviour
 
     void Update()
     {
+        // Move bullet
         transform.position += Vector3.forward * (isPlayerBullet ? speed : -speed) * Time.deltaTime;
+
+        // Destroy bullet if it's off screen
+        Vector3 viewportPos = Camera.main.WorldToViewportPoint(transform.position);
+        if (viewportPos.y < -0.1f || viewportPos.y > 1.1f || viewportPos.x < -0.1f || viewportPos.x > 1.1f)
+        {
+            Destroy(gameObject);
+        }
     }
 
     void OnCollisionEnter(Collision collision)

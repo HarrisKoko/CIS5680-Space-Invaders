@@ -11,6 +11,12 @@ public class Ship : MonoBehaviour
     public float fireCooldown = 0.5f;
     private float lastFireTime = 0f;
 
+    void Start()
+    {
+        // Initialize lives UI
+        GameManager.Instance?.UpdateLivesUI(lives);
+    }
+
     void Update()
     {
         // Ship movement (left/right)
@@ -36,6 +42,7 @@ public class Ship : MonoBehaviour
     public void LoseLife()
     {
         lives--;
+        GameManager.Instance?.UpdateLivesUI(lives); // Update UI immediately
         if (lives <= 0)
             Die();
     }

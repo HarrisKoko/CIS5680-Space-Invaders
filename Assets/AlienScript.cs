@@ -6,18 +6,17 @@ public class Alien : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        // Only respond to player bullets
         if (collision.gameObject.CompareTag("PlayerBullet"))
         {
-            // Notify GameController to add score
+            // Add score
+            if (GameManager.Instance != null)
+                GameManager.Instance.AddScore(scoreValue);
 
-            // Destroy the alien
             Destroy(gameObject);
-
-            // Destroy the bullet
             Destroy(collision.gameObject);
         }
     }
+
 
     public void Die()
     {
