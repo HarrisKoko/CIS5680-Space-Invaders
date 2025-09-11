@@ -29,7 +29,7 @@ public class AlienManager : MonoBehaviour
 
     [Header("Game Over / Level Cleared Settings")]
     public float deathZ = 0f; // Z position where aliens reaching triggers game over
-    private bool gameEnded = false; // prevents multiple triggers
+    private bool gameEnded = false;
 
     private List<GameObject> aliens = new List<GameObject>();
     private bool edgeHit = false;
@@ -163,7 +163,8 @@ public class AlienManager : MonoBehaviour
     void SpawnUFO()
     {
         Vector3 spawnPos = new Vector3(-20f, 0f, 10f);
-        GameObject ufo = Instantiate(ufoPrefab, spawnPos, Quaternion.identity);
+        Quaternion spawnRot = Quaternion.Euler(90f, 0f, 0f);
+        GameObject ufo = Instantiate(ufoPrefab, spawnPos, spawnRot);
         ufo.transform.localScale = Vector3.one;
 
         UFO ufoScript = ufo.GetComponent<UFO>();
@@ -191,7 +192,6 @@ public class AlienManager : MonoBehaviour
 
     void CheckLevelCleared()
     {
-        // If all aliens destroyed
         if (aliens.All(a => a == null))
         {
             gameEnded = true;

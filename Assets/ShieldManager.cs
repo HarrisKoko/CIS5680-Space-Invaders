@@ -6,7 +6,7 @@ public class ShieldManager : MonoBehaviour
     public int width = 5;         // number of blocks horizontally
     public int height = 3;        // number of blocks vertically
     public float blockSize = 1f; // size of each block
-    public GameObject blockPrefab; // a simple cube or quad prefab
+    public GameObject blockPrefab; // building block prefab
 
     [Header("Shield Instances")]
     public int shieldInstances = 3;    // shields to left/right of center

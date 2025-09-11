@@ -9,8 +9,8 @@ public class GameManager : MonoBehaviour
     [Header("UI References")]
     public Text scoreText;
     public Text livesText;
-    public GameObject gameOverPanel;       // assign your GameOver panel here
-    public GameObject levelClearedPanel;   // assign your Level Cleared panel here
+    public GameObject gameOverPanel;       
+    public GameObject levelClearedPanel;   
 
     private int score = 0;
 
@@ -32,8 +32,6 @@ public class GameManager : MonoBehaviour
         if (levelClearedPanel != null)
             levelClearedPanel.SetActive(false);
     }
-
-    // ---------------- Score ----------------
     public void AddScore(int amount)
     {
         score += amount;
@@ -46,7 +44,6 @@ public class GameManager : MonoBehaviour
             scoreText.text = "Score: " + score;
     }
 
-    // ---------------- Lives ----------------
     public void UpdateLivesUI(int currentLives)
     {
         if (livesText != null)
@@ -56,7 +53,6 @@ public class GameManager : MonoBehaviour
             TriggerGameOver();
     }
 
-    // ---------------- Game Over ----------------
     public void TriggerGameOver()
     {
         if (gameOverPanel != null)
@@ -66,7 +62,6 @@ public class GameManager : MonoBehaviour
         StartCoroutine(ReturnToMainMenuAfterDelay(3f));
     }
 
-    // ---------------- Level Cleared ----------------
     public void TriggerLevelCleared()
     {
         if (levelClearedPanel != null)
@@ -80,7 +75,7 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSecondsRealtime(delay);
 
-        Time.timeScale = 1f; // reset time scale
-        SceneManager.LoadScene("Menu"); // make sure your main menu scene is named "Menu"
+        Time.timeScale = 1f; 
+        SceneManager.LoadScene("Menu"); 
     }
 }

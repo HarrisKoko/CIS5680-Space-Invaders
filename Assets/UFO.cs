@@ -2,10 +2,10 @@ using UnityEngine;
 
 public class UFO : MonoBehaviour
 {
-    public float speed = 10f;           // horizontal movement speed
-    public int scoreValue = 100;        // points for killing UFO
-    public float lifeTime = 10f;        // destroy if not killed after time
-    public bool movingRight = true;     // direction
+    public float speed = 10f;           
+    public int scoreValue = 100;        
+    public float lifeTime = 10f;        
+    public bool movingRight = true;     
 
     private float timer = 0f;
 
@@ -30,14 +30,16 @@ public class UFO : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
+    public GameObject deathExplosion;
     void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("PlayerBullet"))
         {
             if (GameManager.Instance != null)
                 GameManager.Instance.AddScore(scoreValue);
-
+            Instantiate(deathExplosion, gameObject.transform.position,
+            Quaternion.AngleAxis(-90, Vector3.right));
+            Destroy(gameObject);
             Destroy(collision.gameObject);
             Destroy(gameObject);
         }

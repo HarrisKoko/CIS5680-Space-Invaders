@@ -13,7 +13,6 @@ public class Ship : MonoBehaviour
 
     void Start()
     {
-        // Initialize lives UI
         GameManager.Instance?.UpdateLivesUI(lives);
     }
 
@@ -32,29 +31,53 @@ public class Ship : MonoBehaviour
         // Fire bullet with cooldown
         if (Input.GetButtonDown("Fire1") && Time.time - lastFireTime >= fireCooldown)
         {
-            // Use transform.forward for correct direction & scale compensation
-            Vector3 spawnPos = transform.position + transform.forward * bulletOffset;
+            Vector3 spawnPos = transform.position + new Vector3(0f, 0f, bulletOffset);
             Quaternion spawnRot = Quaternion.Euler(90f, 0f, 0f);
             Instantiate(bulletPrefab, spawnPos, spawnRot);
             lastFireTime = Time.time;
         }
     }
-
+    public AudioClip explosionSound;
+    public GameObject deathExplosion;
     public void LoseLife()
     {
         lives--;
-        GameManager.Instance?.UpdateLivesUI(lives); // Update UI immediately
+        GameManager.Instance?.UpdateLivesUI(lives); 
+
+        if (explosionSound != null)
+        {
+ 
+            GameObject tempAudio = new GameObject("TempAudio");
+            tempAudio.transform.position = transform.position;
+
+            AudioSource audioSource = tempAudio.AddComponent<AudioSource>();
+            audioSource.clip = explosionSound;
+            audioSource.volume = 100f;       
+            audioSource.spatialBlend = 0f;   
+            audioSource.Play();
+
+            Destroy(tempAudio, explosionSound.length);
+        }
+        else
+        {
+            Debug.Log("NO AUDIOSOURCE");
+        }
 
         if (lives <= 0)
             Die();
     }
 
-    void Die()
-    {
-        Debug.Log("Player ship destroyed!");
-        Destroy(gameObject);
 
-        // Notify GameManager to trigger Game Over UI
-        GameManager.Instance?.TriggerGameOver();
+
+
+    public void Die()
+    {
+
+        Instantiate(deathExplosion, gameObject.transform.position,
+        Quaternion.AngleAxis(-90, Vector3.right));
+        Destroy(gameObject);
+        Destroy(gameObject);
     }
+
+
 }
